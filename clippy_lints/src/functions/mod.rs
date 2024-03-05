@@ -1,3 +1,4 @@
+mod invisible_lifetimes;
 mod impl_trait_in_params;
 mod misnamed_getters;
 mod must_use;
@@ -359,6 +360,49 @@ declare_clippy_lint! {
     "`impl Trait` is used in the function's parameters"
 }
 
+declare_clippy_lint! {
+    /// ### What it does
+    ///
+    /// ### Why is this bad?
+    /// This can obfuscate the association of input and output lifetimes,
+    /// as well as cause more confusing compiler messages on borrow
+    /// checker errrors. This may not cause errors immediately, but can
+    /// lead to confusion or borrow checker errors further down the road.
+    ///
+    /// ### Example
+    /// ```no_run
+    /// struct SecretStr<'a>(&'a str);
+    ///
+    /// // Input and output is associated (but this is not clear)
+    /// fn make_secret(s: &str) -> SecretStr {
+    ///     MyStruct(s) 
+    /// }
+    ///
+    /// // Input and output is not supposed to be associated!
+    /// fn confusing_lifetimes(i: &i32) -> SecretStr {
+    ///     println!("{i}");
+    ///     MyStruct("Hello, world!") 
+    /// }
+    /// ```
+    /// Use instead:
+    /// ```no_run
+    /// struct SecretStr<'a>(&'a str);
+    ///
+    /// fn make_secret(s: &str) -> SecretStr<'_> {
+    ///     MyStruct(s) 
+    /// }
+    ///
+    /// fn confusing_lifetimes(i: &i32) -> SecretStr<'static> {
+    ///     println!("{i}");
+    ///     MyStruct("Hello, world!") 
+    /// }
+    /// ```
+    #[clippy::version = "1.78.0"]
+    pub INVISIBLE_LIFETIMES,
+    pedantic,
+    "default lint description"
+}
+
 #[derive(Copy, Clone)]
 #[allow(clippy::struct_field_names)]
 pub struct Functions {
@@ -395,6 +439,7 @@ impl_lint_pass!(Functions => [
     RESULT_LARGE_ERR,
     MISNAMED_GETTERS,
     IMPL_TRAIT_IN_PARAMS,
+    INVISIBLE_LIFETIMES,
 ]);
 
 impl<'tcx> LateLintPass<'tcx> for Functions {
@@ -413,6 +458,7 @@ impl<'tcx> LateLintPass<'tcx> for Functions {
         not_unsafe_ptr_arg_deref::check_fn(cx, kind, decl, body, def_id);
         misnamed_getters::check_fn(cx, kind, decl, body, span);
         impl_trait_in_params::check_fn(cx, &kind, body, hir_id);
+        invisible_lifetimes::check_fn(cx, kind, decl, span);
     }
 
     fn check_item(&mut self, cx: &LateContext<'tcx>, item: &'tcx hir::Item<'_>) {
