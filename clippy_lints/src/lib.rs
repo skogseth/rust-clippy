@@ -138,6 +138,7 @@ mod extra_unused_type_parameters;
 mod fallible_impl_from;
 mod float_literal;
 mod floating_point_arithmetic;
+mod foo_functions;
 mod format;
 mod format_args;
 mod format_impl;
@@ -1118,6 +1119,7 @@ pub fn register_lints(store: &mut rustc_lint::LintStore, conf: &'static Conf) {
     store.register_late_pass(move |_| Box::new(incompatible_msrv::IncompatibleMsrv::new(msrv())));
     store.register_late_pass(|_| Box::new(to_string_trait_impl::ToStringTraitImpl));
     store.register_early_pass(|| Box::new(multiple_bound_locations::MultipleBoundLocations));
+    store.register_early_pass(|| Box::new(foo_functions::FooFunctions));
     // add lints here, do not remove this comment, it's used in `new_lint`
 }
 
