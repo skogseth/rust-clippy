@@ -1,15 +1,60 @@
-error[E0106]: missing lifetime specifier
-  --> tests/ui/invisible_lifetimes.rs:11:22
+error: found elided lifetime
+  --> tests/ui/invisible_lifetimes.rs:9:19
    |
-LL | fn return_value() -> MyStruct {
-   |                      ^^^^^^^^ expected named lifetime parameter
+LL | fn input_value(_: SecretStr) {}
+   |                   ^^^^^^^^^
    |
-   = help: this function's return type contains a borrowed value, but there is no value for it to be borrowed from
-help: consider using the `'static` lifetime, but this is uncommon unless you're returning a borrowed value from a `const` or a `static`, or if you will only have owned values
-   |
-LL | fn return_value() -> MyStruct<'static> {
-   |                              +++++++++
+   = help: explicitly annotate the lifetime
+   = note: `-D clippy::invisible-lifetimes` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::invisible_lifetimes)]`
 
-error: aborting due to 1 previous error
+error: found elided lifetime
+  --> tests/ui/invisible_lifetimes.rs:11:16
+   |
+LL | fn identity(s: SecretStr) -> SecretStr {
+   |                ^^^^^^^^^
+   |
+   = help: explicitly annotate the lifetime
 
-For more information about this error, try `rustc --explain E0106`.
+error: found elided lifetime
+  --> tests/ui/invisible_lifetimes.rs:17:23
+   |
+LL |     fn input_value(_: &i32) {}
+   |                       ^
+   |
+   = help: explicitly annotate the lifetime
+
+error: found elided lifetime
+  --> tests/ui/invisible_lifetimes.rs:19:20
+   |
+LL |     fn identity(i: &i32) -> &i32 {
+   |                    ^
+   |
+   = help: explicitly annotate the lifetime
+
+error: found elided lifetime
+  --> tests/ui/invisible_lifetimes.rs:26:19
+   |
+LL | fn make_secret(s: &str) -> SecretStr {
+   |                   ^
+   |
+   = help: explicitly annotate the lifetime
+
+error: found elided lifetime
+  --> tests/ui/invisible_lifetimes.rs:32:21
+   |
+LL | fn reveal_secret(s: SecretStr) -> &str {
+   |                     ^^^^^^^^^
+   |
+   = help: explicitly annotate the lifetime
+
+error: found elided lifetime
+  --> tests/ui/invisible_lifetimes.rs:38:27
+   |
+LL | fn confusing_lifetimes(s: &str) -> SecretStr {
+   |                           ^
+   |
+   = help: explicitly annotate the lifetime
+
+error: aborting due to 7 previous errors
+

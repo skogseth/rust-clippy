@@ -10,7 +10,7 @@ pub(super) fn check_fn<'tcx>(
     cx: &LateContext<'tcx>,
     kind: FnKind<'tcx>,
     _decl: &'tcx FnDecl<'_>,
-    span: Span,
+    _span: Span,
 ) {
     if let Some(span) = should_emit(kind) {
         span_lint_and_help(
