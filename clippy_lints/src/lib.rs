@@ -260,6 +260,7 @@ mod no_mangle_with_rust_abi;
 mod non_canonical_impls;
 mod non_copy_const;
 mod non_expressive_names;
+mod non_hierarchical_crate_paths;
 mod non_octal_unix_permissions;
 mod non_send_fields_in_send_ty;
 mod nonstandard_macro_braces;
@@ -1118,6 +1119,7 @@ pub fn register_lints(store: &mut rustc_lint::LintStore, conf: &'static Conf) {
     store.register_late_pass(move |_| Box::new(incompatible_msrv::IncompatibleMsrv::new(msrv())));
     store.register_late_pass(|_| Box::new(to_string_trait_impl::ToStringTraitImpl));
     store.register_early_pass(|| Box::new(multiple_bound_locations::MultipleBoundLocations));
+    store.register_late_pass(|_| Box::new(non_hierarchical_crate_paths::NonHierarchicalCratePaths));
     // add lints here, do not remove this comment, it's used in `new_lint`
 }
 
