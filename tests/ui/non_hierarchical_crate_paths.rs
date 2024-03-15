@@ -4,21 +4,38 @@
 fn main() {}
 
 pub mod hello {
-    // Valid
-    use world::function1;
-    use self::world::function2;
-
-    // Invalid
-    use crate::other::function3;
-    use super::other::function4;
-    
-    pub mod world {
+    pub mod inner_module {
         pub fn function1() {}
         pub fn function2() {}
+        pub fn function3() {}
+    }
+
+    // Valid
+    use inner_module::function1;
+    use self::inner_module::function2;
+
+    // Invalid (but valid object)
+    use crate::hello::inner_module::function3;
+
+    // Invalid
+    use crate::world::function4;
+    use super::world::function5;
+    
+    fn test() {
+        // Valid
+        inner_module::function1();
+        self::inner_module::function2();
+
+        // Invalid (but valid object)
+        crate::hello::inner_module::function3();
+
+        // Invalid
+        crate::world::function4();
+        super::world::function5();
     }
 }
 
-pub mod other {
-    pub fn function3() {}
+pub mod world {
     pub fn function4() {}
+    pub fn function5() {}
 }
