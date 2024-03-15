@@ -1,7 +1,8 @@
+use clippy_utils::diagnostics::span_lint_and_help;
 use rustc_hir::*;
 use rustc_lint::{LateContext, LateLintPass};
 use rustc_session::declare_lint_pass;
-use clippy_utils::diagnostics::span_lint_and_help;
+use rustc_span::symbol::kw;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -33,18 +34,14 @@ impl<'tcx> LateLintPass<'tcx> for NonHierarchicalCratePaths {
                 path.span,
                 "non hierarchical crate path",
                 None,
-                "structure your code in a hierarchical fashion"
+                "structure your code in a hierarchical fashion",
             );
         }
     }
 }
 
 fn path_is_non_hierarchical(path: &Path<'_>) -> bool {
-    let Some(first_segment) = path.segments.first() else { 
-        return false;
-    };
-
-    let ident = &first_segment.ident;
-    ident.is_path_segment_keyword() &&
-        matches!(ident.as_str(), "crate" | "super")
+    path.segments
+        .first()
+        .is_some_and(|first_segment| matches!(first_segment.ident.name, kw::Crate | kw::Super))
 }

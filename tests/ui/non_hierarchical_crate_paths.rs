@@ -11,16 +11,16 @@ pub mod hello {
     }
 
     // Valid
-    use inner_module::function1;
     use self::inner_module::function2;
+    use inner_module::function1;
 
     // Invalid (but valid object)
     use crate::hello::inner_module::function3;
 
     // Invalid
-    use crate::world::function4;
     use super::world::function5;
-    
+    use crate::world::function4;
+
     fn test() {
         // Valid
         inner_module::function1();
