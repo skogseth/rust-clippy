@@ -9,10 +9,10 @@ use super::INVISIBLE_LIFETIMES;
 pub(super) fn check_fn<'tcx>(
     cx: &LateContext<'tcx>,
     kind: FnKind<'tcx>,
-    _decl: &'tcx FnDecl<'_>,
+    decl: &'tcx FnDecl<'_>,
     _span: Span,
 ) {
-    if let Some(span) = should_emit(kind) {
+    for span in emits(kind, decl) {
         span_lint_and_help(
             cx,
             INVISIBLE_LIFETIMES,
@@ -24,18 +24,27 @@ pub(super) fn check_fn<'tcx>(
     }
 }
 
-fn should_emit<'tcx>(kind: FnKind<'tcx>) -> Option<Span> {
+fn emits<'tcx>(kind: FnKind<'tcx>, decl: &'tcx FnDecl<'_>) -> Vec<Span> {
     // Only support free standing functions (for now)
-    let FnKind::ItemFn(_, generics, _) = kind else { return None };
+    let FnKind::ItemFn(_, generics, _) = kind else { return Vec::new() };
 
-    for param in generics.params {
-        if let GenericParamKind::Lifetime { kind: lifetime_kind } = param.kind {
-            if let LifetimeParamKind::Elided = lifetime_kind {
-                return Some(param.span);
-            }
-        }
+    let generics: Vec<_> = generics.params.into_iter().filter_map(|param| match param.kind {
+        GenericParamKind::Lifetime { 
+            kind: LifetimeParamKind::Elided,
+        } => Some((param.hir_id, param.span)),
+        _ => None,
+    }).collect();
+
+    let generic_hir_ids: Vec<_> = generics.iter().map(|(hir_id, _)| hir_id).collect();
+    eprintln!("Generics: {generic_hir_ids:?}");
+
+    let param_hir_ids: Vec<_> = decl.inputs.iter().map(|input| input.hir_id).collect();
+    eprintln!("Params: {param_hir_ids:?}");
+
+    if let rustc_hir::FnRetTy::Return(ty) = decl.output {
+        eprintln!("Output: {:?}", ty.hir_id);
     }
 
-    None
+    generics.into_iter().map(|(_, s)| s).collect()
 }
 

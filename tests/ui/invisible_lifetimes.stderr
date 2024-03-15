@@ -1,3 +1,7 @@
+Generics: []
+Params: []
+Generics: [HirId(DefId(0:8 ~ invisible_lifetimes[8668]::input_value).5)]
+Params: [HirId(DefId(0:8 ~ invisible_lifetimes[8668]::input_value).6)]
 error: found elided lifetime
   --> tests/ui/invisible_lifetimes.rs:9:19
    |
@@ -8,6 +12,9 @@ LL | fn input_value(_: SecretStr) {}
    = note: `-D clippy::invisible-lifetimes` implied by `-D warnings`
    = help: to override `-D warnings` add `#[allow(clippy::invisible_lifetimes)]`
 
+Generics: [HirId(DefId(0:9 ~ invisible_lifetimes[8668]::identity).7)]
+Params: [HirId(DefId(0:9 ~ invisible_lifetimes[8668]::identity).8)]
+Output: HirId(DefId(0:9 ~ invisible_lifetimes[8668]::identity).11)
 error: found elided lifetime
   --> tests/ui/invisible_lifetimes.rs:11:16
    |
@@ -16,6 +23,8 @@ LL | fn identity(s: SecretStr) -> SecretStr {
    |
    = help: explicitly annotate the lifetime
 
+Generics: [HirId(DefId(0:11 ~ invisible_lifetimes[8668]::false_positive::input_value).5)]
+Params: [HirId(DefId(0:11 ~ invisible_lifetimes[8668]::false_positive::input_value).9)]
 error: found elided lifetime
   --> tests/ui/invisible_lifetimes.rs:17:23
    |
@@ -24,6 +33,9 @@ LL |     fn input_value(_: &i32) {}
    |
    = help: explicitly annotate the lifetime
 
+Generics: [HirId(DefId(0:12 ~ invisible_lifetimes[8668]::false_positive::identity).7)]
+Params: [HirId(DefId(0:12 ~ invisible_lifetimes[8668]::false_positive::identity).11)]
+Output: HirId(DefId(0:12 ~ invisible_lifetimes[8668]::false_positive::identity).15)
 error: found elided lifetime
   --> tests/ui/invisible_lifetimes.rs:19:20
    |
@@ -32,6 +44,9 @@ LL |     fn identity(i: &i32) -> &i32 {
    |
    = help: explicitly annotate the lifetime
 
+Generics: [HirId(DefId(0:13 ~ invisible_lifetimes[8668]::make_secret).10)]
+Params: [HirId(DefId(0:13 ~ invisible_lifetimes[8668]::make_secret).14)]
+Output: HirId(DefId(0:13 ~ invisible_lifetimes[8668]::make_secret).15)
 error: found elided lifetime
   --> tests/ui/invisible_lifetimes.rs:26:19
    |
@@ -40,6 +55,9 @@ LL | fn make_secret(s: &str) -> SecretStr {
    |
    = help: explicitly annotate the lifetime
 
+Generics: [HirId(DefId(0:14 ~ invisible_lifetimes[8668]::reveal_secret).8)]
+Params: [HirId(DefId(0:14 ~ invisible_lifetimes[8668]::reveal_secret).9)]
+Output: HirId(DefId(0:14 ~ invisible_lifetimes[8668]::reveal_secret).15)
 error: found elided lifetime
   --> tests/ui/invisible_lifetimes.rs:32:21
    |
@@ -48,6 +66,9 @@ LL | fn reveal_secret(s: SecretStr) -> &str {
    |
    = help: explicitly annotate the lifetime
 
+Generics: [HirId(DefId(0:15 ~ invisible_lifetimes[8668]::confusing_lifetimes).14)]
+Params: [HirId(DefId(0:15 ~ invisible_lifetimes[8668]::confusing_lifetimes).18)]
+Output: HirId(DefId(0:15 ~ invisible_lifetimes[8668]::confusing_lifetimes).19)
 error: found elided lifetime
   --> tests/ui/invisible_lifetimes.rs:38:27
    |
